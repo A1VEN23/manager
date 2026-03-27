@@ -8,19 +8,22 @@ exports.handler = async (event, context) => {
 
     // Обработка верификации вебхука (GET запрос)
     if (httpMethod === 'GET') {
-      const mode = queryStringParameters['hub.mode'];
-      const token = queryStringParameters['hub.verify_token'];
-      const challenge = queryStringParameters['hub.challenge'];
+      const mode = queryStringParameters?.['hub.mode'];
+      const token = queryStringParameters?.['hub.verify_token'];
+      const challenge = queryStringParameters?.['hub.challenge'];
 
       if (mode === 'subscribe' && token === process.env.META_VERIFY_TOKEN) {
         return {
           statusCode: 200,
+          headers: {
+            'Content-Type': 'text/plain'
+          },
           body: challenge
         };
       } else {
         return {
           statusCode: 403,
-          body: 'Verification failed'
+          body: 'Forbidden'
         };
       }
     }
